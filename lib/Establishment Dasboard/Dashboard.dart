@@ -178,7 +178,7 @@ class _DashboardPageState extends State<DashboardPage> {
         selectedItemColor: Color(0xFF288F13), // Color for the selected item
         unselectedItemColor: Colors.black, // Color for the unselected items
         backgroundColor: Colors.white, // Background color of the BottomNavigationBar
-        elevation: 7.0, // Elevation for shadow effect
+        elevation: 8.0, // Elevation for shadow effect
       ),
     );
   }
