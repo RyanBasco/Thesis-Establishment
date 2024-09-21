@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:thesis_establishment/Establishment%20Dasboard/ScanQR.dart';
+import 'package:thesis_establishment/Establishment%20Dasboard/UploadQR.dart'; // Import UploadQR page
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -9,9 +11,11 @@ class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0; // Default to Community
   String _searchQuery = ""; // State for search query
 
-  // Data for the boxes (title and icon)
+  // Data for the boxes (title and icon or image)
   final List<Map<String, dynamic>> _boxes = [
-    {'title': 'QR', 'icon': Icons.qr_code},
+    {'title': 'Scan QR', 'icon': Icons.qr_code}, // Updated title to 'Scan QR'
+    {'title': 'Upload QR', 'icon': Icons.qr_code_2}, // Upload QR box
+    {'title': 'Generate QR', 'icon': Icons.qr_code_scanner}, // Added new box for 'Generate QR'
     {'title': 'Records', 'icon': Icons.receipt},
     {'title': 'Review', 'icon': Icons.announcement},
     {'title': 'Analytics', 'icon': Icons.analytics},
@@ -27,6 +31,20 @@ class _DashboardPageState extends State<DashboardPage> {
     setState(() {
       _searchQuery = query.toLowerCase();
     });
+  }
+
+  void _navigateToScanQR(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScanQR()), // Navigate to ScanQR page
+    );
+  }
+
+  void _navigateToUploadQR(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UploadQR()), // Navigate to UploadQR page
+    );
   }
 
   @override
@@ -54,27 +72,24 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0,), // Reduced vertical padding
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bell Icon above the Search Bar
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                    icon: Icon(Icons.notifications, color: Colors.black, size: 40), // Bell icon
+                    icon: Icon(Icons.notifications, color: Colors.black, size: 40),
                     onPressed: () {
                       // Handle bell icon press
                     },
                   ),
                 ),
-                SizedBox(height: 8), // Reduced space between bell icon and search bar
-
-                // Search Bar with white background and black text inside
+                SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // White background for the search bar
-                    borderRadius: BorderRadius.circular(8), // Rounded corners
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.5),
@@ -84,77 +99,86 @@ class _DashboardPageState extends State<DashboardPage> {
                     ],
                   ),
                   child: TextField(
-                    onChanged: _onSearchChanged, // Handle search query changes
+                    onChanged: _onSearchChanged,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search, color: Colors.black), // Black search icon
+                      prefixIcon: Icon(Icons.search, color: Colors.black),
                       hintText: 'Search...',
-                      hintStyle: TextStyle(color: Colors.black), // Black placeholder text
+                      hintStyle: TextStyle(color: Colors.black),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0), // Adjust padding for a larger input area
+                      contentPadding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     ),
-                    style: TextStyle(color: Colors.black), // Black text color inside search bar
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
-                SizedBox(height: 24), // Reduced space between search bar and the white boxes
-
-                // Display filtered boxes
-                ...filteredBoxes.map((box) => Container(
-                  width: double.infinity,
-                  height: 150,
-                  padding: EdgeInsets.all(20.0),
-                  margin: EdgeInsets.only(bottom: 16.0), // Reduced margin between boxes
-                  decoration: BoxDecoration(
-                    color: Colors.white, // White background for the box
-                    borderRadius: BorderRadius.circular(16), // Rounded corners
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 6.0,
-                        offset: Offset(0, 3),
+                SizedBox(height: 24),
+                ...filteredBoxes.map((box) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (box['title'] == 'Scan QR') {
+                        _navigateToScanQR(context);
+                      } else if (box['title'] == 'Upload QR') {
+                        _navigateToUploadQR(context); // Navigate to UploadQR page
+                      }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 150,
+                      padding: EdgeInsets.all(20.0),
+                      margin: EdgeInsets.only(bottom: 16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 6.0,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 80.0, // Diameter of the circle
-                        height: 80.0, // Diameter of the circle
-                        decoration: BoxDecoration(
-                          color: Color(0xFF288F13), // Circle color
-                          shape: BoxShape.circle, // Make it a circle
-                        ),
-                        child: Icon(
-                          box['icon'], // Dynamic icon
-                          color: Colors.white,
-                          size: 50.0, // Size of the icon
-                        ),
-                      ),
-                      SizedBox(width: 16), // Space between circle and text
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              box['title'], // Dynamic title
-                              style: TextStyle(
-                                color: Colors.black, // Text color
-                                fontSize: 22, // Font size
-                                fontWeight: FontWeight.bold,
-                              ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 80.0,
+                            height: 80.0,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF288F13),
+                              shape: BoxShape.circle,
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios, // Arrow icon
-                              color: Colors.black,
-                              size: 24.0,
+                            child: Icon(
+                              box['icon'], // Dynamic icon
+                              color: Colors.white,
+                              size: 50.0,
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  box['title'],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.black,
+                                  size: 24.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )).toList(),
-                SizedBox(height: 20), // Reduced space at the bottom
+                    ),
+                  );
+                }).toList(),
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -165,20 +189,20 @@ class _DashboardPageState extends State<DashboardPage> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.groups_3_outlined, color: _selectedIndex == 0 ? Color(0xFF288F13) : Colors.black), // Community icon
+            icon: Icon(Icons.groups_3_outlined, color: _selectedIndex == 0 ? Color(0xFF288F13) : Colors.black),
             label: 'Community',
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: _selectedIndex == 1 ? Color(0xFF288F13) : Colors.black), // Personal icon
+            icon: Icon(Icons.person, color: _selectedIndex == 1 ? Color(0xFF288F13) : Colors.black),
             label: 'Personal',
             backgroundColor: Colors.white,
           ),
         ],
-        selectedItemColor: Color(0xFF288F13), // Color for the selected item
-        unselectedItemColor: Colors.black, // Color for the unselected items
-        backgroundColor: Colors.white, // Background color of the BottomNavigationBar
-        elevation: 8.0, // Elevation for shadow effect
+        selectedItemColor: Color(0xFF288F13),
+        unselectedItemColor: Colors.black,
+        backgroundColor: Colors.white,
+        elevation: 8.0,
       ),
     );
   }
