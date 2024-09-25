@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thesis_establishment/Establishment%20Profile/EstabProfile.dart';
 
 class Records extends StatefulWidget {
   @override
@@ -9,10 +10,17 @@ class _RecordsState extends State<Records> {
   int _selectedIndex = 0; // Default selection for bottom navigation bar
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EstablishmentProfile()), // Navigate to EstablishmentProfile
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {

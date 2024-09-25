@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis_establishment/Landing%20Page%20with%20Login/EstablishmentLoginpage.dart';
+import 'package:flutter/services.dart';
+
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -15,10 +17,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _mobileNumberController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
+
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   String? _passwordError;
   String? _emailError;
+  String? _mobileNumberError;
 
   // Password validation function
   String? validatePassword(String password) {
@@ -37,6 +43,17 @@ class _SignUpPageState extends State<SignUpPage> {
     return null;
   }
 
+  // Mobile number validation function
+  String? validateMobileNumber(String mobileNumber) {
+    if (mobileNumber.length != 11) {
+      return 'Mobile number must be 11 digits';
+    }
+    if (!RegExp(r'^\d+$').hasMatch(mobileNumber)) {
+      return 'Mobile number can only contain digits';
+    }
+    return null;
+  }
+
   // Check if passwords match
   bool doPasswordsMatch() {
     return _passwordController.text == _confirmPasswordController.text;
@@ -48,12 +65,15 @@ class _SignUpPageState extends State<SignUpPage> {
     final password = _passwordController.text;
     final establishmentName = _establishmentNameController.text;
     final location = _locationController.text;
+    final mobileNumber = _mobileNumberController.text;
+    final website = _websiteController.text;
 
     setState(() {
       _emailError = validateEmail(email);
+      _mobileNumberError = validateMobileNumber(mobileNumber);
     });
 
-    if (_emailError == null && _passwordError == null && doPasswordsMatch()) {
+    if (_emailError == null && _passwordError == null && doPasswordsMatch() && _mobileNumberError == null) {
       try {
         // Check if the email is already registered
         final emailExists = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
@@ -77,6 +97,8 @@ class _SignUpPageState extends State<SignUpPage> {
           'Location': location,
           'Email': email,
           'Password': password,
+          'Mobile Number': mobileNumber,
+          'Website': website,
         });
 
         // Store data in Cloud Firestore
@@ -85,6 +107,8 @@ class _SignUpPageState extends State<SignUpPage> {
           'Location': location,
           'Email': email,
           'Password': password,
+          'Mobile Number': mobileNumber,
+          'Website': website,
         });
 
         // Show success dialog
@@ -166,7 +190,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Establishment Name Field
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding to adjust length
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       color: Color(0xFF288F13),
                       borderRadius: BorderRadius.circular(8),
@@ -186,7 +210,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Location Field
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding to adjust length
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       color: Color(0xFF288F13),
                       borderRadius: BorderRadius.circular(8),
@@ -204,9 +228,67 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   SizedBox(height: 20),
 
+                  // Mobile Number Field
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF288F13),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        controller: _mobileNumberController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(11), // Limit to 11 digits
+                          FilteringTextInputFormatter.digitsOnly, // Allow only digits
+                        ],
+                        decoration: InputDecoration(
+                          labelText: 'Mobile Number',
+                          labelStyle: TextStyle(color: Colors.white),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                        ),
+                        style: TextStyle(color: Colors.white),
+                        onChanged: (value) {
+                          setState(() {
+                            _mobileNumberError = validateMobileNumber(value);
+                          });
+                        },
+                      ),
+                    ),
+                    if (_mobileNumberError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          _mobileNumberError!,
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                  SizedBox(height: 20),
+
+                  // Website Field
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF288F13),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TextField(
+                      controller: _websiteController,
+                      decoration: InputDecoration(
+                        labelText: 'Website',
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
                   // Email Field
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding to adjust length
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       color: Color(0xFF288F13),
                       borderRadius: BorderRadius.circular(8),
@@ -239,7 +321,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Password Field
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding to adjust length
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       color: Color(0xFF288F13),
                       borderRadius: BorderRadius.circular(8),
@@ -251,7 +333,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: 'Password',
                         labelStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -263,6 +344,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                         ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                       ),
                       style: TextStyle(color: Colors.white),
                       onChanged: (value) {
@@ -284,7 +366,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                   // Confirm Password Field
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0), // Padding to adjust length
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     decoration: BoxDecoration(
                       color: Color(0xFF288F13),
                       borderRadius: BorderRadius.circular(8),
@@ -296,7 +378,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: 'Confirm Password',
                         labelStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -308,39 +389,24 @@ class _SignUpPageState extends State<SignUpPage> {
                             });
                           },
                         ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                       ),
                       style: TextStyle(color: Colors.white),
-                      onChanged: (value) {
-                        setState(() {}); // Rebuild to check if passwords match
-                      },
                     ),
                   ),
-                  if (!doPasswordsMatch() && _confirmPasswordController.text.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Passwords do not match',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
 
                   // Sign Up Button
                   Center(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        await signUp(); // Call the sign-up function
-                      },
+                      onPressed: signUp,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF288F13), // Button color
-                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15), // Increased size
+                        backgroundColor: Color(0xFF288F13),
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                       ),
                       child: Text(
                         'Sign Up',
-                        style: TextStyle(
-                          color: Colors.white, // Button text color
-                          fontSize: 18,
-                        ),
+                        style: TextStyle(color: Colors.white), // Changed button text color to white
                       ),
                     ),
                   ),

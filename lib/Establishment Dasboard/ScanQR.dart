@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:thesis_establishment/Establishment%20Profile/EstabProfile.dart';
 
 class ScanQR extends StatefulWidget {
   @override
@@ -11,10 +12,17 @@ class _ScanQRState extends State<ScanQR> {
   String? scannedCode; // To store the scanned QR code
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EstablishmentProfile()), // Navigate to EstablishmentProfile
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {

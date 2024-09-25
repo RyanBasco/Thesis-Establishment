@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import 'package:qr_code_tools/qr_code_tools.dart'; // Import the QR code tools
+import 'package:qr_code_tools/qr_code_tools.dart';
+import 'package:thesis_establishment/Establishment%20Profile/EstabProfile.dart'; // Import the QR code tools
 
 class UploadQR extends StatefulWidget {
   @override
@@ -14,10 +15,18 @@ class _UploadQRState extends State<UploadQR> {
   List<PlatformFile> _validFiles = [];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  if (index == 1) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EstablishmentProfile()), // Navigate to EstablishmentProfile
+    );
   }
+}
+  
 
   Future<void> _pickFiles() async {
     try {
