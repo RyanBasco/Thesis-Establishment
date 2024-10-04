@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thesis_establishment/Establishment%20Dasboard/GenerateQR.dart';
+import 'package:thesis_establishment/Establishment%20Dasboard/Review.dart';
 import 'package:thesis_establishment/Establishment%20Dasboard/ScanQR.dart';
-import 'package:thesis_establishment/Establishment%20Dasboard/UploadQR.dart';
 import 'package:thesis_establishment/Establishment%20Profile/EstabProfile.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -19,7 +19,6 @@ class _DashboardPageState extends State<DashboardPage> {
   // Define the data for the boxes
   final List<Map<String, dynamic>> _boxes = [
     {'title': 'Scan QR', 'icon': Icons.qr_code},
-    {'title': 'Upload QR', 'icon': Icons.qr_code_2},
     {'title': 'Generate QR', 'icon': Icons.qr_code_scanner},
     {'title': 'Records', 'icon': Icons.receipt},
     {'title': 'Review', 'icon': Icons.announcement},
@@ -83,17 +82,18 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  void _navigateToUploadQR(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadQR()), // Navigate to UploadQR page
-    );
-  }
 
   void _navigateToGenerateQR(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => GenerateQR()), // Navigate to GenerateQR page
+    );
+  }
+
+  void _navigateToReview(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Review()), // Navigate to GenerateQR page
     );
   }
 
@@ -179,10 +179,11 @@ Widget build(BuildContext context) {
                   onTap: () {
                     if (box['title'] == 'Scan QR') {
                       _navigateToScanQR(context);
-                    } else if (box['title'] == 'Upload QR') {
-                      _navigateToUploadQR(context); // Navigate to UploadQR page
                     } else if (box['title'] == 'Generate QR') {
                       _navigateToGenerateQR(context); // Navigate to GenerateQR
+                    }
+                    else if (box['title'] == 'Review') {
+                      _navigateToReview(context); // Navigate to GenerateQR
                     }
                   },
                   child: Container(
