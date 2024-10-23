@@ -16,7 +16,7 @@ class _LandingPageState extends State<LandingPage> {
 
   // Function to navigate to the next page after 5 seconds
   void _navigateToNextPage() {
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed (const Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -27,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
               child: child,
             );
           },
-          transitionDuration: Duration(milliseconds: 500), // Adjust animation duration
+          transitionDuration: const Duration(milliseconds: 500), // Adjust animation duration
         ),
       );
     });
@@ -39,7 +39,7 @@ class _LandingPageState extends State<LandingPage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFFEEFFA9),

@@ -69,42 +69,50 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _fetchUserData() async {
-    try {
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        documentId = currentUser.uid;
-        email = currentUser.email!;
+  try {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      documentId = currentUser.uid;
+      email = currentUser.email!;
 
-        DocumentSnapshot snapshot = await FirebaseFirestore.instance
-            .collection('Establishments')
-            .doc(documentId)
-            .get();
+      // Fetch user data based on the email
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('establishments')
+          .where('email', isEqualTo: email)
+          .get();
 
-        if (snapshot.exists) {
-          setState(() {
-            establishmentName = snapshot['Establishment Name'] ?? 'N/A';
-            address = snapshot['Location'] ?? 'N/A';
-            website = snapshot['Website'] ?? 'N/A';
-            mobileNumber = snapshot['Mobile Number'] ?? 'N/A';
+      // Debugging: Check how many documents were found
+      print('Documents found: ${snapshot.docs.length} for email: $email');
 
-            // Set the initial values to the text controllers
-            nameController.text = establishmentName;
-            addressController.text = address;
-            websiteController.text = website;
-            mobileNumberController.text = mobileNumber;
+      if (snapshot.docs.isNotEmpty) {
+        DocumentSnapshot userDoc = snapshot.docs.first; // Get the first document
 
-            isLoading = false;
-          });
-        } else {
-          print("No data found for the document.");
+        setState(() {
+          establishmentName = userDoc['establishmentName'] ?? 'N/A';
+          address = userDoc['barangay'] ?? 'N/A';
+          website = userDoc['website'] ?? 'N/A'; // Ensure the field name is correct
+          mobileNumber = userDoc['contact'] ?? 'N/A';
+
+          // Set the initial values to the text controllers
+          nameController.text = establishmentName;
+          addressController.text = address;
+          websiteController.text = website;
+          mobileNumberController.text = mobileNumber;
+
           isLoading = false;
-        }
+        });
+      } else {
+        print("No data found for the document.");
+        isLoading = false;
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isLoading = false;
     }
+  } catch (e) {
+    print('Error fetching data: $e');
+    isLoading = false;
   }
+}
+
+
 
   Future<void> _saveUserData() async {
   if (!mounted) return; // Ensure the widget is still mounted before proceeding
@@ -131,14 +139,14 @@ class _EditProfileState extends State<EditProfile> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile updated successfully!')),
+       const SnackBar(content: Text('Profile updated successfully!')),
       );
     }
   } catch (e) {
     print('Error saving data: $e');
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save profile')),
+       const SnackBar(content: Text('Failed to save profile')),
       );
     }
   }
@@ -153,16 +161,16 @@ class _EditProfileState extends State<EditProfile> {
         SizedBox(height: 16),
         Text(
           labelText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Color(0xFF2C812A),
           ),
         ),
-        SizedBox(height: 8),
+       const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(8.0),
@@ -171,13 +179,13 @@ class _EditProfileState extends State<EditProfile> {
               ? TextField(
                   controller: controller,
                   inputFormatters: inputFormatters,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
                 )
               : Text(
                   controller.text.isNotEmpty ? controller.text : 'N/A',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                 ),
         ),
       ],
@@ -189,26 +197,26 @@ class _EditProfileState extends State<EditProfile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 16),
+       const SizedBox(height: 16),
         Text(
           labelText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Color(0xFF2C812A),
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           decoration: BoxDecoration(
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
             value.isNotEmpty ? value : 'N/A',
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
           ),
         ),
       ],
@@ -221,7 +229,7 @@ class _EditProfileState extends State<EditProfile> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFFEEFFA9),
@@ -234,7 +242,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
         child: isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -249,19 +257,19 @@ class _EditProfileState extends State<EditProfile> {
                             child: Container(
                               width: 50,
                               height: 50,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.arrow_back,
                                 color: Colors.black,
                                 size: 24,
                               ),
                             ),
                           ),
-                          SizedBox(width: 75),
-                          Text(
+                          const SizedBox(width: 75),
+                          const Text(
                             "Edit Profile",
                             style: TextStyle(
                               fontSize: 24,
@@ -284,7 +292,7 @@ class _EditProfileState extends State<EditProfile> {
                             BoxShadow(
                               color: Colors.black.withOpacity(0.2),
                               blurRadius: 6.0,
-                              offset: Offset(0, 3),
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -298,18 +306,18 @@ class _EditProfileState extends State<EditProfile> {
                                   Container(
                                     width: 100,
                                     height: 100,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Colors.black,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.person,
                                       color: Colors.white,
                                       size: 65,
                                     ),
                                   ),
-                                  SizedBox(width: 16),
-                                  Text(
+                                  const SizedBox(width: 16),
+                                  const Text(
                                     "Upload Image",
                                     style: TextStyle(
                                       fontSize: 24,
@@ -358,7 +366,7 @@ class _EditProfileState extends State<EditProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Photos",
                 style: TextStyle(
                   fontSize: 22,
@@ -366,7 +374,7 @@ class _EditProfileState extends State<EditProfile> {
                   color: Color(0xFF2C812A),
                 ),
               ),
-              SizedBox(height: 8),
+             const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -377,7 +385,7 @@ class _EditProfileState extends State<EditProfile> {
                         border: Border.all(color: Color(0xFF2C812A), width: 2),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           '+',
                           style: TextStyle(
@@ -388,7 +396,7 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 18),
+                 const SizedBox(width: 18),
                   Expanded(
                     child: Container(
                       height: 100,
@@ -400,7 +408,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+             const SizedBox(height: 8),
               Text(
                 '*Drag and drop to rearrange your photos.\n'
                 '*First photos above will be your cover/featured photo.\n'
@@ -410,8 +418,8 @@ class _EditProfileState extends State<EditProfile> {
                   color: Colors.grey[600],
                 ),
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+             const Text(
                 "Description",
                 style: TextStyle(
                   fontSize: 18,
@@ -419,12 +427,12 @@ class _EditProfileState extends State<EditProfile> {
                   color: Color(0xFF2C812A),
                 ),
               ),
-              SizedBox(height: 8),
+             const SizedBox(height: 8),
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: Color(0xFF898989), width: 2),
+                  border: Border.all(color: const Color(0xFF898989), width: 2),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -433,7 +441,7 @@ class _EditProfileState extends State<EditProfile> {
                       maxLines: null,
                       controller: _controller,
                       onChanged: onDescriptionChanged,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(10),
                         hintText: 'Enter your description here...',
@@ -444,9 +452,9 @@ class _EditProfileState extends State<EditProfile> {
                   ],
                 ),
               ),
-              SizedBox(height: 16), // Space before social links
+             const SizedBox(height: 16), // Space before social links
               // Social Links section
-              Text(
+              const Text(
                 "Social Links",
                 style: TextStyle(
                   fontSize: 22,
@@ -454,8 +462,8 @@ class _EditProfileState extends State<EditProfile> {
                   color: Color(0xFF2C812A),
                 ),
               ),
-              SizedBox(height: 8),
-              Row(
+              const SizedBox(height: 8),
+              const Row(
             children: [
               Text(
                 "Facebook",
@@ -468,7 +476,7 @@ class _EditProfileState extends State<EditProfile> {
               Icon(Icons.facebook, color: Color(0xFF2C812A)),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Facebook container (editable when 'isEditing' is true)
           Container(
             width: double.infinity,
@@ -481,12 +489,12 @@ class _EditProfileState extends State<EditProfile> {
             child: TextFormField(
               controller: _facebookController,
               enabled: isEditing, // Editable when 'isEditing' is true
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Facebook link here...',
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xFF2C812A),
               ),
             ),
@@ -495,7 +503,7 @@ class _EditProfileState extends State<EditProfile> {
           SizedBox(height: 16),
 
           // Instagram
-          Row(
+          const Row(
             children: [
               Text(
                 "Instagram",
@@ -522,21 +530,21 @@ class _EditProfileState extends State<EditProfile> {
             child: TextFormField(
               controller: _instagramController,
               enabled: isEditing, // Editable when 'isEditing' is true
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Instagram link here...',
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xFF2C812A),
               ),
             ),
           ),
 
-          SizedBox(height: 16),
+        const SizedBox(height: 16),
 
           // Twitter
-          Row(
+         const Row(
             children: [
               Text(
                 "Twitter",
@@ -563,12 +571,12 @@ class _EditProfileState extends State<EditProfile> {
             child: TextFormField(
               controller: _twitterController,
               enabled: isEditing, // Editable when 'isEditing' is true
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Twitter link here...',
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
               ),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xFF2C812A),
               ),
             ),
@@ -588,34 +596,34 @@ class _EditProfileState extends State<EditProfile> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF2C812A),
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Square shape
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 35, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(width: 5),
+             const SizedBox(width: 5),
               ElevatedButton(
                 onPressed: isEditing ? _saveUserData : null, // Save only when editing
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF2C812A),
-                  shape: RoundedRectangleBorder(
+                  backgroundColor: const Color(0xFF2C812A),
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Square shape
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 35, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
                 ),
-                child: Text(
+                child: const Text(
                   'Save',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
             ]
                   )
                 )

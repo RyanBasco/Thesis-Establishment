@@ -22,7 +22,7 @@ class _ReviewState extends State<Review> {
         child: AppBar(
           automaticallyImplyLeading: false, // Remove the default back arrow
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const  BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Color(0xFFEEFFA9),
@@ -36,7 +36,7 @@ class _ReviewState extends State<Review> {
             ),
           ),
           title: Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0), // Adjust vertical padding
+            padding: const EdgeInsets.symmetric(vertical: 16.0), // Adjust vertical padding
             child: Row(
               children: [
                 GestureDetector(
@@ -44,16 +44,16 @@ class _ReviewState extends State<Review> {
                     Navigator.pop(context); // Navigate back
                   },
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(8.0), // Padding for the circle
-                    child: Icon(Icons.arrow_back, color: Colors.black), // Back arrow inside circle
+                    padding: const EdgeInsets.all(8.0), // Padding for the circle
+                    child: const Icon(Icons.arrow_back, color: Colors.black), // Back arrow inside circle
                   ),
                 ),
-                SizedBox(width: 95), // Space between icon and text
-                Text(
+                const SizedBox(width: 95), // Space between icon and text
+                const Text(
                   'Review',
                   style: TextStyle(color: Colors.black, fontSize: 24),
                 ),
@@ -77,7 +77,7 @@ class _ReviewState extends State<Review> {
                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
+                     const Padding(
                         padding: const EdgeInsets.only(left: 30.0), // Add left padding to move 5.0 to the right
                         child: Text(
                           '5.0', // Rating text
@@ -88,7 +88,7 @@ class _ReviewState extends State<Review> {
                         ),
                       ),
                       Row(
-                        children: List.generate(5, (index) => Icon(
+                        children: List.generate(5, (index) => const Icon(
                           Icons.star,
                           color: Colors.yellow, // Yellow color for stars
                           size: 20.5,
@@ -109,7 +109,7 @@ class _ReviewState extends State<Review> {
                               color: Colors.white, // White background for the box
                               border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 'All (0)', // Black text inside the white box
                                 style: TextStyle(color: Colors.black),
@@ -124,7 +124,7 @@ class _ReviewState extends State<Review> {
                               color: Color(0xFF288F13), // Green background for the box
                               border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '5 Star (0)', // White text inside the green box
                                 style: TextStyle(color: Colors.white),
@@ -142,16 +142,16 @@ class _ReviewState extends State<Review> {
                             height: 40, // Set height for the green box
                             decoration: BoxDecoration(
                               color: Color(0xFF288F13), // Green background for the box
-                              border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
+                              border: Border.all(color: const Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '4 Star (0)', // White text inside the green box
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
-                          SizedBox(width: 15), // Space between the two boxes
+                         const SizedBox(width: 15), // Space between the two boxes
                           Container(
                             width: 120, // Set width for the green box
                             height: 40, // Set height for the green box
@@ -159,7 +159,7 @@ class _ReviewState extends State<Review> {
                               color: Color(0xFF288F13), // Green background for the box
                               border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '3 Star (0)', // White text inside the green box
                                 style: TextStyle(color: Colors.white),
@@ -179,7 +179,7 @@ class _ReviewState extends State<Review> {
                               color: Color(0xFF288F13), // Green background for the box
                               border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '2 Star (0)', // White text inside the green box
                                 style: TextStyle(color: Colors.white),
@@ -194,7 +194,7 @@ class _ReviewState extends State<Review> {
                               color: Color(0xFF288F13), // Green background for the box
                               border: Border.all(color: Color(0xFF288F13), width: 2), // Green border
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '1 Star (0)', // White text inside the green box
                                 style: TextStyle(color: Colors.white),
@@ -213,7 +213,7 @@ class _ReviewState extends State<Review> {
               top: 220, // Adjust the top position to place the line below the last row
               right: 0, // Align with the boxes
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0), // Padding to adjust position
+                padding: const EdgeInsets.symmetric(vertical: 20.0), // Padding to adjust position
                 child: Container(
                   width: 455, // Width to match the total box width above
                   height: 2, // Thickness of the line

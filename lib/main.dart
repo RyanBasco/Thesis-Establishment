@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:thesis_establishment/Landing%20Page%20with%20Login/Landingpage.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';  // Import ScreenUtil package
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,12 +36,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: LandingPage(), // Change to LandingPage
+    return ScreenUtilInit(
+      designSize: const Size(360, 650),  // Set base design size
+      minTextAdapt: true,                // Make text scalable
+      splitScreenMode: true,             // Support split screen
+      builder: (context, child) {
+        return MaterialApp(
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: LandingPage(),  // Use LandingPage
+        );
+      },
     );
   }
 }

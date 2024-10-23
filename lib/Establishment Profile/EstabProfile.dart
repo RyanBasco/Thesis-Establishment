@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thesis_establishment/Establishment%20Dasboard/Dashboard.dart';
-import 'package:thesis_establishment/Establishment%20Profile/EditProfile.dart'; // Import EditProfile page
+import 'package:thesis_establishment/Establishment%20Profile/EditProfile.dart';
+import 'package:thesis_establishment/Landing%20Page%20with%20Login/EstablishmentLoginpage.dart'; // Import EditProfile page
 
 class EstablishmentProfile extends StatefulWidget {
   @override
@@ -24,14 +25,14 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
     if (user != null) {
       String email = user.email ?? '';
       QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('Establishments')
-          .where('Email', isEqualTo: email)
+          .collection('establishments')
+          .where('email', isEqualTo: email)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
         setState(() {
           establishmentName =
-              snapshot.docs.first['Establishment Name'] ?? 'No Name Available';
+              snapshot.docs.first['establishmentName'] ?? 'No Name Available';
         });
       } else {
         setState(() {
@@ -141,7 +142,7 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditProfile()), // Navigate to EditProfile
+                          builder: (context) => EditProfile()),
                     );
                   }),
                   SizedBox(height: 16), // Spacer between circles
@@ -151,7 +152,11 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
                   SizedBox(height: 16),
                   // Third circle with Log Out
                   buildCircleRow('Log Out', Icons.logout, Colors.red, () {
-                    // Handle Log Out action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EstablishmentLogin()),
+                    );
                   }),
                 ],
               ),

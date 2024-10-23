@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil package
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:thesis_establishment/Establishment%20Profile/EstabProfile.dart';
+import 'package:thesis_establishment/Spending%20Analysis/Inputvalue.dart'; // Ensure correct path
 
 class ScanQR extends StatefulWidget {
   @override
@@ -10,19 +12,20 @@ class ScanQR extends StatefulWidget {
 class _ScanQRState extends State<ScanQR> {
   int _selectedIndex = 0; // Default selection for bottom navigation bar
   String? scannedCode; // To store the scanned QR code
+  bool _isNavigated = false; // Flag to prevent multiple navigations
 
   void _onItemTapped(int index) {
-  setState(() {
-    _selectedIndex = index;
-  });
+    setState(() {
+      _selectedIndex = index;
+    });
 
-  if (index == 1) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => EstablishmentProfile()), // Navigate to EstablishmentProfile
-    );
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EstablishmentProfile()), // Navigate to EstablishmentProfile
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class _ScanQRState extends State<ScanQR> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color(0xFFEEFFA9),
@@ -46,7 +49,7 @@ class _ScanQRState extends State<ScanQR> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h), // Responsive padding
                 child: Row(
                   children: [
                     // Back button with circle and "<" icon
@@ -55,8 +58,8 @@ class _ScanQRState extends State<ScanQR> {
                         Navigator.pop(context); // Navigate back
                       },
                       child: Container(
-                        width: 40,
-                        height: 40,
+                        width: 40.w, // Responsive width
+                        height: 40.h, // Responsive height
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
@@ -68,7 +71,7 @@ class _ScanQRState extends State<ScanQR> {
                             ),
                           ],
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.arrow_back,
                           color: Colors.black,
                         ),
@@ -76,11 +79,11 @@ class _ScanQRState extends State<ScanQR> {
                     ),
                     // Adding padding to move 'Scan QR' slightly to the left
                     Padding(
-                      padding: const EdgeInsets.only(left: 100.0), // Adjust this value as needed
+                      padding: EdgeInsets.only(left: 100.w), // Responsive padding
                       child: Text(
                         'Scan QR',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 24.sp, // Responsive font size
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -95,8 +98,8 @@ class _ScanQRState extends State<ScanQR> {
                   children: [
                     // QR Scanner (MobileScanner widget)
                     Container(
-                      width: 350,
-                      height: 350,
+                      width: 250.w, // Responsive width
+                      height: 250.h, // Responsive height
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
@@ -111,33 +114,52 @@ class _ScanQRState extends State<ScanQR> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: MobileScanner(
-                        onDetect: (BarcodeCapture barcodeCapture) {
-                          final List<Barcode> barcodes = barcodeCapture.barcodes;
-                          for (final barcode in barcodes) {
-                            if (barcode.rawValue != null) {
-                              setState(() {
-                                scannedCode = barcode.rawValue; // Store the scanned QR code
-                              });
-                              print('QR Code found: $scannedCode');
-                              // You can perform actions after scanning here, such as navigating to another page.
+                          onDetect: (BarcodeCapture barcodeCapture) {
+                            if (_isNavigated) return; // Prevent multiple navigations
+
+                            final List<Barcode> barcodes = barcodeCapture.barcodes;
+                            for (final barcode in barcodes) {
+                              if (barcode.rawValue != null) {
+                                setState(() {
+                                  scannedCode = barcode.rawValue; // Store the scanned QR code
+                                  _isNavigated = true; // Set the flag to true
+                                });
+                                print('QR Code found: $scannedCode');
+
+                                // Navigate to the Inputvalue page after a short delay
+                                Future.delayed(Duration(milliseconds: 500), () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          Inputvalue(scannedCode: scannedCode!),
+                                    ),
+                                  ).then((_) {
+                                    // Reset the flag when returning to this page
+                                    setState(() {
+                                      _isNavigated = false;
+                                      scannedCode = null; // Optional: Reset the scanned code
+                                    });
+                                  });
+                                });
+
+                                break; // Exit the loop after handling the first valid barcode
+                              }
                             }
-                          }
-                        },
-                      )
+                          },
+                        ),
                       ),
                     ),
-                    SizedBox(height: 18), // Space between the scanner and the text
-
-                    // "Align frame with QR code" text in grey color
+                    const SizedBox(height: 18), // Space between the scanner and the text
                     Align(
                       alignment: Alignment.center,
                       child: Text(
                         scannedCode == null
                             ? 'Align frame with QR code'
-                            : 'Scanned Code: $scannedCode',
+                            : '', // Change this line to an empty string to hide the scanned code message
                         style: TextStyle(
                           color: Colors.grey[600], // Grey color for text
-                          fontSize: 18, // Font size for text
+                          fontSize: 18.sp, // Responsive font size
                           fontWeight: FontWeight.bold,
                         ),
                       ),
